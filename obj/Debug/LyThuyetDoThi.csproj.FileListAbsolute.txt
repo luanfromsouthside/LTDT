@@ -1,0 +1,7 @@
+C:\Users\Thinkpad E570\Documents\LyThuyetDoThi\bin\Debug\LyThuyetDoThi.exe.config
+C:\Users\Thinkpad E570\Documents\LyThuyetDoThi\bin\Debug\LyThuyetDoThi.exe
+C:\Users\Thinkpad E570\Documents\LyThuyetDoThi\bin\Debug\LyThuyetDoThi.pdb
+C:\Users\Thinkpad E570\Documents\LyThuyetDoThi\obj\Debug\LyThuyetDoThi.csprojAssemblyReference.cache
+C:\Users\Thinkpad E570\Documents\LyThuyetDoThi\obj\Debug\LyThuyetDoThi.csproj.CoreCompileInputs.cache
+C:\Users\Thinkpad E570\Documents\LyThuyetDoThi\obj\Debug\LyThuyetDoThi.exe
+C:\Users\Thinkpad E570\Documents\LyThuyetDoThi\obj\Debug\LyThuyetDoThi.pdb
