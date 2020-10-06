@@ -26,8 +26,6 @@ namespace LyThuyetDoThi
             //Bài 4
             gr.ReadFile2GraphV3("DanhSachCanh.INP");
             gr.WriteDegEdgesGraph("DanhSachCanh.OUT");
-
-            Console.ReadKey();
         }
     }
 }

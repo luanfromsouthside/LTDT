@@ -10,7 +10,9 @@ namespace LyThuyetDoThi
     {
         int[,] arrGraph;
 
-        int[][] lstGraph;
+        LinkedList<int>[] lstGraph;
+
+        Tuple<int, int>[] edgeGraph;
 
         int numVertices;
 
@@ -37,13 +39,13 @@ namespace LyThuyetDoThi
         {
             string[] lines = System.IO.File.ReadAllLines(fname);
             numVertices = Int32.Parse(lines[0].Trim());
-            lstGraph = new int[numVertices][];
+            lstGraph = new LinkedList<int>[numVertices];
             for (int i = 1; i < numVertices + 1; i++)
             {
                 string[] line = lines[i].Split(' ');
-                lstGraph[i - 1] = new int[line.Length];
+                lstGraph[i - 1] = new LinkedList<int>();
                 for (int j = 0; j < line.Length; j++)
-                    lstGraph[i - 1][j] = Int32.Parse(line[j].Trim());
+                    lstGraph[i - 1].AddLast(Int32.Parse(line[j].Trim()));
             }
         }
 
@@ -54,12 +56,11 @@ namespace LyThuyetDoThi
             string[] line = lines[0].Split(' ');
             numVertices = Int32.Parse(line[0].Trim());
             numEdges = Int32.Parse(line[1].Trim());
-            arrGraph = new int[numEdges, 2];
+            edgeGraph = new Tuple<int, int>[numEdges]; 
             for(int i = 1; i < numEdges + 1; i++)
             {
                 line = lines[i].Split(' ');
-                arrGraph[i - 1, 0] = Int32.Parse(line[0].Trim());
-                arrGraph[i - 1, 1] = Int32.Parse(line[1].Trim());
+                edgeGraph[i - 1] = new Tuple<int, int>(Int32.Parse(line[0].Trim()), Int32.Parse(line[1].Trim()));
             }
         }
 
@@ -106,7 +107,7 @@ namespace LyThuyetDoThi
             {
                 sw.WriteLine(numVertices);
                 for (int i = 0; i < numVertices; i++)
-                    sw.Write(String.Format("{0,-3}", lstGraph[i].Length));
+                    sw.Write(String.Format("{0,-3}", lstGraph[i].Count));
             }
         }
 
@@ -120,8 +121,8 @@ namespace LyThuyetDoThi
                 for (int i = 0; i < numVertices; i++) temp[i] = 0;
                 for (int i = 0; i < numEdges; i++)
                 {
-                    temp[arrGraph[i, 0] - 1]++;
-                    temp[arrGraph[i, 1] - 1]++;
+                    temp[edgeGraph[i].Item1 - 1]++;
+                    temp[edgeGraph[i].Item2 - 1]++;
                 }
                 for (int i = 0; i < numVertices; i++)
                     sw.Write(String.Format("{0,-3}", temp[i]));
