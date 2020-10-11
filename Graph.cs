@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Security.Policy;
 
 namespace LyThuyetDoThi
 {
@@ -18,10 +17,13 @@ namespace LyThuyetDoThi
 
         int numEdges;
 
+        LinkedList<(int, int, int)> edges;
+
         public Graph() { }
 
-        //Đọc đồ thị câu 1 và 2 - ma trận kề
-        public void ReadFile2GraphV1(string fname)
+        #region Đọc đồ thị
+        //Ma trận kề
+        public void ReadFile2Graph(string fname)
         {
             string[] lines = System.IO.File.ReadAllLines(fname);
             numVertices = Int32.Parse(lines[0].Trim());
@@ -34,8 +36,8 @@ namespace LyThuyetDoThi
             }
         }
 
-        //Đọc đồ thị câu 3 - danh sách kề
-        public void ReadFile2GraphV2(string fname)
+        //Danh sách kề
+        public void ReadFile2LstGraph(string fname)
         {
             string[] lines = System.IO.File.ReadAllLines(fname);
             numVertices = Int32.Parse(lines[0].Trim());
@@ -49,8 +51,8 @@ namespace LyThuyetDoThi
             }
         }
 
-        //Đọc đồ thị câu 4 - danh sách cạnh
-        public void ReadFile2GraphV3(string fname)
+        //Danh sách cạnh
+        public void ReadFile2EdgeGraph(string fname)
         {
             string[] lines = System.IO.File.ReadAllLines(fname);
             string[] line = lines[0].Split(' ');
@@ -64,6 +66,23 @@ namespace LyThuyetDoThi
             }
         }
 
+        //Danh sách cạnh có trọng số
+        public void ReadFile2Edges(string fname)
+        {
+            string[] lines = System.IO.File.ReadAllLines(fname);
+            string[] line = lines[0].Split(' ');
+            numVertices = Int32.Parse(line[0].Trim());
+            numEdges = Int32.Parse(line[1].Trim());
+            edges = new LinkedList<(int, int, int)>();
+            for (int i = 1; i < numEdges + 1; i++)
+            {
+                line = lines[i].Split(' ');
+                edges.AddLast((Int32.Parse(line[0].Trim()), Int32.Parse(line[1].Trim()), Int32.Parse(line[2].Trim())));
+            }
+        }
+        #endregion
+
+        #region Buổi 1
         //Câu 1: Bậc đồ thị vô hướng
         public void WriteDegUndGraph2File(string fname)
         {
@@ -128,5 +147,111 @@ namespace LyThuyetDoThi
                     sw.Write(String.Format("{0,-3}", temp[i]));
             }
         }
+        #endregion
+
+        #region Buổi 2
+        //Bài 1: Chuyển danh sách cạnh sang danh sách kề
+        public void Canh2DSKe(string fname)
+        {
+            using(System.IO.StreamWriter sw = new System.IO.StreamWriter(fname))
+            {
+                sw.Write(numVertices);
+                string s = "\n";
+                for(int i = 0; i < numVertices; i++)
+                {
+                    foreach(Tuple<int,int> a in edgeGraph)
+                    {
+                        if (a.Item1 == i + 1)
+                            s = s + a.Item2 + " ";
+                        if (a.Item2 == i + 1)
+                            s = s + a.Item1 + " ";
+                    }
+                    sw.Write(s.TrimEnd());
+                    s = "\n";
+                }
+            }
+        }
+
+        //Bài 2: Chuyển danh sách kề sang danh sách cạnh
+        public void DSKe2Canh(string fname)
+        {
+            using(System.IO.StreamWriter sw = new System.IO.StreamWriter(fname))
+            {
+                int SumDeg = 0;
+                foreach (LinkedList<int> a in lstGraph)
+                    SumDeg += a.Count();
+                numEdges = SumDeg / 2;
+                sw.Write("{0} {1}", numVertices, numEdges);
+                int temp = 0;
+                int edge = 0;
+                for(int i = 0; i < numVertices; i++)
+                {
+                    foreach(var a in lstGraph[i])
+                    {
+                        if (a > i + 1) sw.Write(String.Format("\n{0} {1}", i + 1, a));
+                        edge++;
+                    }
+                    if (edge == numEdges) break;
+                }
+            }
+        }
+
+        //Bài 3: Bồn chứa
+        public void BonChua(string fname)
+        {
+            using(System.IO.StreamWriter sw = new System.IO.StreamWriter(fname))
+            {
+                LinkedList<int> temp = new LinkedList<int>();
+                int bonChua = 0;
+                for (int i = 0; i < numVertices; i++)
+                {
+                    int inDegree = 0;
+                    int outDegree = 0;
+                    for (int j = 0; j < numVertices; j++)
+                    {
+                        inDegree += arrGraph[j, i];
+                        outDegree += arrGraph[i, j];
+                    }
+                    if (inDegree > 0 && outDegree == 0)
+                    {
+                        bonChua++;
+                        temp.AddLast(i + 1);
+                    }
+                }
+                if (bonChua != 0)
+                {
+                    sw.WriteLine(bonChua);
+                    foreach (var a in temp)
+                        sw.Write(a + " ");
+                }
+                else sw.Write(0);
+            }
+        }
+
+        //Bài 4: Độ dài trung bình của cạnh
+        public void TrungBinhCanh(string fname)
+        {
+            using (System.IO.StreamWriter sw = new System.IO.StreamWriter(fname))
+            {
+                int maxEdge = edges.ElementAt(0).Item3;
+                int sumEdge = maxEdge;
+                int countEdges = 1;
+                LinkedList<(int, int, int)> temp = new LinkedList<(int, int, int)>();
+                for(int i = 1; i < numEdges; i++)
+                {
+                    if (edges.ElementAt(i).Item3 > maxEdge)
+                    {
+                        maxEdge = edges.ElementAt(i).Item3;
+                        countEdges = 1;
+                    }
+                    else if (edges.ElementAt(i).Item3 == maxEdge) countEdges++;
+                    sumEdge += edges.ElementAt(i).Item3;
+                }
+                sw.Write(String.Format("{0} \n{1}", sumEdge / numEdges, countEdges));
+                foreach (var a in edges)
+                    if (maxEdge == a.Item3) sw.Write("\n{0} {1} {2}", a.Item1, a.Item2, a.Item3);
+            }
+        }
+        #endregion
     }
 }
