@@ -253,5 +253,191 @@ namespace LyThuyetDoThi
             }
         }
         #endregion
+
+        #region Buổi 3 BFS
+
+        //Cấu trúc dữ liệu
+        int n, s, x, y;
+        //Danh sách các đỉnh đã viếng thăm
+        LinkedList<int> vertices;
+
+        //Các biến hỗ trợ
+        Queue<int> q;
+        bool[] visited;
+        int[] pre;
+        int[] distances;
+
+        public void BFS_Visit(int s)
+        {
+            visited = new bool[n];
+            pre = new int[n];
+            distances = new int[n];
+            vertices = new LinkedList<int>();
+            for (int i = 0; i < n; i++)
+            {
+                visited[i] = false;
+                pre[i] = -1;
+                distances[i] = 0;
+            }
+
+            q = new Queue<int>();
+            q.Enqueue(s);
+
+            visited[s] = true;
+            vertices.AddLast(s);
+
+            while (q.Count != 0)
+            {
+                int u = q.Dequeue();
+
+                foreach (int v in lstGraph[u])
+                {
+                    if (visited[v]) continue;
+
+                    visited[v] = true;
+                    q.Enqueue(v);
+                    pre[v] = u;
+                    distances[v] = distances[u] + 1;
+                    vertices.AddLast(v);
+                }
+            }
+        }
+
+        //BFS_Duyệt các đỉnh cùng miền liên thông với s
+        public void ReadFileBFS(string fname)
+        {
+            string[] lines = System.IO.File.ReadAllLines(fname);
+            string[] line = lines[0].Split(' ');
+            n = Int32.Parse(line[0].Trim());
+            s = Int32.Parse(line[1].Trim()) - 1;
+            lstGraph = new LinkedList<int>[n];
+            for (int i = 1; i < n+1; i++)
+            {
+                line = lines[i].Split(' ');
+                lstGraph[i - 1] = new LinkedList<int>();
+                if (line[0] == "") continue;
+                for (int j = 0; j < line.Length; j++)
+                    lstGraph[i - 1].AddLast(Int32.Parse(line[j].Trim())-1);
+            }
+        }
+
+        public void WriteXtoAllVertices(string fname)
+        {
+            using(System.IO.StreamWriter sw = new System.IO.StreamWriter(fname))
+            {
+                BFS_Visit(s);
+                sw.WriteLine(vertices.Count() - 1);
+                for(int i = 1;i<vertices.Count; i++)
+                {
+                    sw.Write(String.Format("{0,-3}", vertices.ElementAt(i) + 1));
+                }
+            }
+        }
+
+        //BFS_Duyệt đường đi từ x -> y
+        LinkedList<int> path;
+
+        public void ReadFileBFSXtoY(string fname)
+        {
+            string[] lines = System.IO.File.ReadAllLines(fname);
+            string[] line = lines[0].Split(' ');
+            n = Int32.Parse(line[0].Trim());
+            x = Int32.Parse(line[1].Trim()) - 1;
+            y = Int32.Parse(line[2].Trim()) - 1;
+            lstGraph = new LinkedList<int>[n];
+            for (int i = 1; i < n + 1; i++)
+            {
+                line = lines[i].Split(' ');
+                lstGraph[i - 1] = new LinkedList<int>();
+                if (line[0] == "") continue;
+                for (int j = 0; j < line.Length; j++)
+                    lstGraph[i - 1].AddLast(Int32.Parse(line[j].Trim()) - 1);
+            }
+        }
+
+        void FindPath(int t)
+        {
+            for (int i = t; i != -1; i = pre[i]) path.AddFirst(i);
+        }
+
+        public void WriteRoadXtoY(string fname)
+        {
+            using (System.IO.StreamWriter sw = new System.IO.StreamWriter(fname))
+            {
+                BFS_Visit(x);
+                path = new LinkedList<int>();
+                FindPath(y);
+                sw.WriteLine(distances[y]+1);
+                for (int i = 0; i < path.Count(); i++)
+                {
+                    sw.Write(String.Format("{0,-3}", path.ElementAt(i)+1));
+                }
+            }
+        }
+        //BFS_Kiểm tra liên thông
+        public void ReadFileBFSConnect(string fname)
+        {
+            string[] lines = System.IO.File.ReadAllLines(fname);
+            n = Int32.Parse(lines[0].Trim());
+            lstGraph = new LinkedList<int>[n];
+            for (int i = 1; i < n + 1; i++)
+            {
+                string[] line = lines[i].Split(' ');
+                lstGraph[i - 1] = new LinkedList<int>();
+                if (line[0] == "") continue;
+                for (int j = 0; j < line.Length; j++)
+                    lstGraph[i - 1].AddLast(Int32.Parse(line[j].Trim()) - 1);
+            }
+        }
+
+        public void IsConnect(string fname)
+        {
+            using(System.IO.StreamWriter sw = new System.IO.StreamWriter(fname))
+            {
+                BFS_Visit(0);
+                if (vertices.Count() == n) sw.Write("YES");
+                else sw.Write("NO");
+            }
+        }
+
+        //BFS_Đếm miền liên thông
+        void BFS_NumPath(int s)
+        {
+            visited[s] = true;
+            q = new Queue<int>();
+            q.Enqueue(s);
+            while (q.Count != 0)
+            {
+                int u = q.Dequeue();
+
+                foreach (int v in lstGraph[u])
+                {
+                    if (visited[v]) continue;
+
+                    visited[v] = true;
+                    q.Enqueue(v);
+                }
+            }
+        }
+
+        public void WriteNumPath(string fname)
+        {
+            using (System.IO.StreamWriter sw = new System.IO.StreamWriter(fname))
+            {
+                int dem = 0;
+                visited = new bool[n];
+                for (int i = 0; i < visited.Length; i++) visited[i] = false;
+                for (int i = 0; i < visited.Length; i++)
+                {
+                    if (!visited[i])
+                    {
+                        BFS_NumPath(i);
+                        dem++;
+                    }
+                }
+                sw.Write(dem);
+            }
+        }
+        #endregion
     }
 }

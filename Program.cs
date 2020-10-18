@@ -36,8 +36,8 @@ namespace LyThuyetDoThi
             //gr.Canh2DSKe("Canh2DSKe.OUT");
 
             //Bài 2
-            gr.ReadFile2LstGraph("DSKe2Canh.INP");
-            gr.DSKe2Canh("DSKe2Canh.OUT");
+            //gr.ReadFile2LstGraph("DSKe2Canh.INP");
+            //gr.DSKe2Canh("DSKe2Canh.OUT");
 
             //Bài 3
             //gr.ReadFile2Graph("BonChua.INP");
@@ -46,6 +46,26 @@ namespace LyThuyetDoThi
             //Bài 4
             //gr.ReadFile2Edges("TrungBinhCanh.INP");
             //gr.TrungBinhCanh("TrungBinhCanh.OUT");
+            #endregion
+
+            #region Buổi 3
+
+            //Bài 1
+            //gr.ReadFileBFS("BFS.INP");
+            //gr.WriteXtoAllVertices("BFS.OUT");
+
+            //Bài 2
+            //gr.ReadFileBFSXtoY("TimDuong.INP");
+            //gr.WriteRoadXtoY("TimDuong.OUT");
+
+            //Bài 3
+            //gr.ReadFileBFSConnect("LienThong.INP");
+            //gr.IsConnect("LienThong.OUT");
+
+            //Bài 4
+            gr.ReadFileBFSConnect("DemLienThong.INP");
+            gr.WriteNumPath("DemLienThong.OUT");
+
             #endregion
         }
     }
